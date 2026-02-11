@@ -5,6 +5,7 @@ import morgan from "morgan";
 import healthRouter from "./routes/health.js";
 import authRouter from "./routes/auth.js";
 import businessesRouter from "./routes/businesses.js";
+import servicesRouter from "./routes/services.js";
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.use(morgan("dev"));
 app.use(healthRouter);
 app.use("/auth", authRouter);
 app.use("/businesses", businessesRouter);
+app.use("/services", servicesRouter);
 
 export default app;
