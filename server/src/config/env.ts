@@ -7,6 +7,7 @@ type Env = {
     password: string;
     name: string;
   };
+  jwtSecret: string;
 };
 
 const requireEnv = (key: string): string => {
@@ -36,6 +37,7 @@ const env: Env = {
     password: isTest ? process.env.DB_PASSWORD ?? "password" : requireEnv("DB_PASSWORD"),
     name: isTest ? process.env.DB_NAME ?? "youflow_test" : requireEnv("DB_NAME"),
   },
+  jwtSecret: isTest ? process.env.JWT_SECRET ?? "test_secret" : requireEnv("JWT_SECRET"),
 };
 
 export default env;
