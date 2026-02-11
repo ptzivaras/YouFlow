@@ -8,6 +8,7 @@ import businessesRouter from "./routes/businesses.js";
 import servicesRouter from "./routes/services.js";
 import availabilityRouter from "./routes/availability.js";
 import reservationsRouter from "./routes/reservations.js";
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -22,5 +23,9 @@ app.use("/businesses", businessesRouter);
 app.use("/services", servicesRouter);
 app.use("/availability", availabilityRouter);
 app.use("/reservations", reservationsRouter);
+
+// Error handling - must be last
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

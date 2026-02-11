@@ -8,6 +8,7 @@ import {
   updateService,
 } from "../controllers/service.controller.js";
 import { authenticate, requireAdmin } from "../middleware/auth.js";
+import { validateService } from "../middleware/validation.js";
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router.get("/", listServices);
 router.get("/:id", getService);
 
 // Admin-only endpoints
-router.post("/", authenticate, requireAdmin, createService);
+router.post("/", authenticate, requireAdmin, validateService, createService);
 router.patch("/:id", authenticate, requireAdmin, updateService);
 router.delete("/:id", authenticate, requireAdmin, deleteService);
 

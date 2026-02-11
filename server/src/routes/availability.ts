@@ -8,6 +8,7 @@ import {
   updateSlot,
 } from "../controllers/slot.controller.js";
 import { authenticate, requireAdmin } from "../middleware/auth.js";
+import { validateSlot } from "../middleware/validation.js";
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router.get("/", listSlots);
 router.get("/:id", getSlot);
 
 // Admin-only endpoints
-router.post("/", authenticate, requireAdmin, createSlot);
+router.post("/", authenticate, requireAdmin, validateSlot, createSlot);
 router.patch("/:id", authenticate, requireAdmin, updateSlot);
 router.delete("/:id", authenticate, requireAdmin, deleteSlot);
 

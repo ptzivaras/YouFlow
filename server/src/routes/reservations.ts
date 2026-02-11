@@ -9,11 +9,12 @@ import {
   updateReservationStatus,
 } from "../controllers/reservation.controller.js";
 import { authenticate, requireAdmin } from "../middleware/auth.js";
+import { validateReservation } from "../middleware/validation.js";
 
 const router = Router();
 
 // Customer endpoints - must be authenticated
-router.post("/", authenticate, createReservation);
+router.post("/", authenticate, validateReservation, createReservation);
 router.get("/", authenticate, listReservations);
 router.get("/:id", authenticate, getReservation);
 router.patch("/:id/reschedule", authenticate, rescheduleReservation);
