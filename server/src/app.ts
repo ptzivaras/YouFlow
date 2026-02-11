@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.js";
 import businessesRouter from "./routes/businesses.js";
 import servicesRouter from "./routes/services.js";
 import availabilityRouter from "./routes/availability.js";
+import reservationsRouter from "./routes/reservations.js";
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use("/auth", authRouter);
 app.use("/businesses", businessesRouter);
 app.use("/services", servicesRouter);
 app.use("/availability", availabilityRouter);
+app.use("/reservations", reservationsRouter);
 
 export default app;
