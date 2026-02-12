@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Businesses from './pages/Businesses';
 import PrivateRoute from './components/PrivateRoute';
 import React from 'react'
 
@@ -18,6 +19,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/businesses"
+            element={
+              <PrivateRoute>
+                <Businesses />
               </PrivateRoute>
             }
           />
