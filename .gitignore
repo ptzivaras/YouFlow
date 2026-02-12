@@ -1,0 +1,10 @@
+# Design & Documentation (private)
+Figma/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
