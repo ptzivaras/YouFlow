@@ -52,14 +52,17 @@ const Dashboard = () => {
               </p>
             </Link>
 
-            <div className="p-6 bg-gray-100 rounded-lg opacity-50 cursor-not-allowed">
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">
+            <Link
+              to="/reservations"
+              className="p-6 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            >
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">
                 📅 Reservations
               </h3>
-              <p className="text-sm text-gray-500">
-                Coming soon...
+              <p className="text-sm text-blue-700">
+                Book and manage appointments
               </p>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Businesses from './pages/Businesses';
 import Services from './pages/Services';
 import AvailabilitySlots from './pages/AvailabilitySlots';
+import Reservations from './pages/Reservations';
 import PrivateRoute from './components/PrivateRoute';
 import React from 'react'
 
@@ -45,6 +46,14 @@ function App() {
             element={
               <PrivateRoute>
                 <AvailabilitySlots />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/reservations"
+            element={
+              <PrivateRoute>
+                <Reservations />
               </PrivateRoute>
             }
           />
