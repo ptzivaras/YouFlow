@@ -144,4 +144,19 @@ npm run dev
 - Frontend automatically connects to backend via `VITE_API_URL` in `.env`
 - Make sure PostgreSQL is running (`youflow_dev` database)
 
+### Test Accounts
+No pre-seeded accounts exist. Create these via Register page:
+
+**Admin Account:**
+- Email: `admin@youflow2.com`
+- Password: `123456`
+- Role: Select **"Business Admin"** during registration
+
+**Customer Account:**
+- Email: `customer@youflow.com`
+- Password: `123456`
+- Role: Select **"Customer"** during registration (default)
+
+
+
 
