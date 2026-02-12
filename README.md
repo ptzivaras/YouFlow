@@ -107,4 +107,21 @@ Separation:Calendar View, Booking Form,  Admin View
 HTTP status codes
 Disabled UI actions when needed (π.χ. booked slot)
 
+Security
+In production, we usually store the access token in memory and the refresh token in an HttpOnly cookie, to protect against XSS. For smaller or demo projects, localStorage can be acceptable with proper security notes.
+
+## Layers
+Business (YouFlow Spa)
+  └── Service (Massage 60min)
+       └── Availability Slot (Tomorrow 10:00-11:00)
+            └── Reservation (Customer booking)
+
+
+## Commands
+URL: http://localhost:3000
+http://localhost:5173/
+How to Run?
+1. cd client
+2. npm run dev
+
 
