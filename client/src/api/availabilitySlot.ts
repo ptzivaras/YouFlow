@@ -1,6 +1,6 @@
 import apiClient from './client';
 
-export type SlotStatus = 'AVAILABLE' | 'BOOKED';
+export type SlotStatus = 'available' | 'booked';
 
 export interface AvailabilitySlot {
   id: number;

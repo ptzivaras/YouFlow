@@ -4,12 +4,14 @@ type CreateServiceData = {
   business_id: number;
   name: string;
   description?: string;
+  price: number;
   duration_minutes: number;
 };
 
 type UpdateServiceData = {
   name?: string;
   description?: string;
+  price?: number;
   duration_minutes?: number;
 };
 

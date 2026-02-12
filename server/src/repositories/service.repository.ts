@@ -5,6 +5,7 @@ export type Service = {
   business_id: number;
   name: string;
   description: string | null;
+  price: number;
   duration_minutes: number;
   created_at: Date;
   updated_at: Date;
@@ -14,20 +15,22 @@ type CreateServiceInput = {
   business_id: number;
   name: string;
   description?: string;
+  price: number;
   duration_minutes: number;
 };
 
 type UpdateServiceInput = {
   name?: string;
   description?: string;
+  price?: number;
   duration_minutes?: number;
 };
 
 // Create service for a business
 export const create = async (data: CreateServiceInput): Promise<Service> => {
   const result = await pool.query(
-    "INSERT INTO services (business_id, name, description, duration_minutes) VALUES ($1, $2, $3, $4) RETURNING *",
-    [data.business_id, data.name, data.description ?? null, data.duration_minutes]
+    "INSERT INTO services (business_id, name, description, price, duration_minutes) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    [data.business_id, data.name, data.description ?? null, data.price, data.duration_minutes]
   );
   return result.rows[0];
 };
@@ -66,6 +69,11 @@ export const update = async (id: number, data: UpdateServiceInput): Promise<Serv
   if (data.description !== undefined) {
     fields.push(`description = $${paramIndex++}`);
     values.push(data.description);
+  }
+
+  if (data.price !== undefined) {
+    fields.push(`price = $${paramIndex++}`);
+    values.push(data.price);
   }
 
   if (data.duration_minutes !== undefined) {

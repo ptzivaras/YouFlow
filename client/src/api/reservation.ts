@@ -1,10 +1,10 @@
 import apiClient from './client';
 
-export type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
 export interface Reservation {
   id: number;
-  customer_id: number;
+  user_id: number;
   slot_id: number;
   status: ReservationStatus;
   notes?: string;
@@ -43,9 +43,13 @@ export const reservationApi = {
     return response.data;
   },
 
-  async cancel(id: number): Promise<Reservation> {
-    const response = await apiClient.post(`/reservations/${id}/cancel`);
+  async updateStatus(id: number, status: ReservationStatus): Promise<Reservation> {
+    const response = await apiClient.patch(`/reservations/${id}/status`, { status });
     return response.data;
+  },
+
+  async cancel(id: number): Promise<void> {
+    await apiClient.delete(`/reservations/${id}`);
   },
 
   async delete(id: number): Promise<void> {

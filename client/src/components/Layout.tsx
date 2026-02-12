@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,6 +9,9 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   const handleLogout = () => {
     logout();
@@ -27,25 +30,41 @@ const Layout = ({ children }: LayoutProps) => {
               <div className="flex space-x-4">
                 <Link
                   to="/businesses"
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    isActive('/businesses')
+                      ? 'text-blue-600 bg-blue-50 font-semibold'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                  }`}
                 >
                   Businesses
                 </Link>
                 <Link
                   to="/services"
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    isActive('/services')
+                      ? 'text-blue-600 bg-blue-50 font-semibold'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                  }`}
                 >
                   Services
                 </Link>
                 <Link
                   to="/availability-slots"
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    isActive('/availability-slots')
+                      ? 'text-blue-600 bg-blue-50 font-semibold'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                  }`}
                 >
                   Availability
                 </Link>
                 <Link
                   to="/reservations"
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    isActive('/reservations')
+                      ? 'text-blue-600 bg-blue-50 font-semibold'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                  }`}
                 >
                   Reservations
                 </Link>

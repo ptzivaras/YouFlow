@@ -138,7 +138,7 @@ export default function Services() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Services</h1>
-          {!showForm && (
+          {!showForm && user?.role === 'admin' && (
             <button
               onClick={() => setShowForm(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

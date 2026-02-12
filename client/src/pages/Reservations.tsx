@@ -23,6 +23,9 @@ export default function Reservations() {
 
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelId, setCancelId] = useState<number | null>(null);
+  
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmReservationId, setConfirmReservationId] = useState<number | null>(null);
 
   useEffect(() => {
     loadData();
@@ -94,6 +97,26 @@ export default function Reservations() {
     }
   };
 
+  const handleConfirmReservation = (id: number) => {
+    setConfirmReservationId(id);
+    setShowConfirmModal(true);
+  };
+
+  const confirmReservation = async () => {
+    if (!confirmReservationId) return;
+
+    try {
+      await reservationApi.updateStatus(confirmReservationId, 'confirmed');
+      await loadData();
+      setShowConfirmModal(false);
+      setConfirmReservationId(null);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to confirm reservation');
+      setShowConfirmModal(false);
+      setConfirmReservationId(null);
+    }
+  };
+
   const getSlotInfo = (slotId: number) => {
     const slot = slots.find(s => s.id === slotId);
     if (!slot) return null;
@@ -118,11 +141,11 @@ export default function Reservations() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'CONFIRMED':
+      case 'confirmed':
         return 'bg-green-100 text-green-700';
-      case 'PENDING':
+      case 'pending':
         return 'bg-yellow-100 text-yellow-700';
-      case 'CANCELLED':
+      case 'cancelled':
         return 'bg-red-100 text-red-700';
       default:
         return 'bg-gray-100 text-gray-700';
@@ -130,12 +153,12 @@ export default function Reservations() {
   };
 
   const availableSlots = slots.filter(slot => {
-    if (slot.status !== 'AVAILABLE') return false;
+    if (slot.status !== 'available') return false;
     // Only show future slots
     return new Date(slot.start_time) > new Date();
   });
 
-  const myReservations = reservations.filter(res => res.customer_id === user?.id);
+  const myReservations = reservations.filter(res => res.user_id === user?.id);
 
   if (loading) {
     return (
@@ -145,6 +168,125 @@ export default function Reservations() {
     );
   }
 
+  // Admin view - All reservations
+  if (user?.role === 'admin') {
+    return (
+      <Layout>
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold mb-6">Manage Reservations</h1>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+              {error}
+            </div>
+          )}
+
+          {reservations.length === 0 ? (
+            <p className="text-gray-500">No reservations yet.</p>
+          ) : (
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {reservations.map((reservation) => {
+                    const info = getSlotInfo(reservation.slot_id);
+                    if (!info) return null;
+                    const { slot, service, business } = info;
+
+                    return (
+                      <tr key={reservation.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          User #{reservation.user_id}
+                          {reservation.notes && (
+                            <div className="text-xs text-gray-500 mt-1">Note: {reservation.notes}</div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-sm">
+                          <div className="font-medium">{service.name}</div>
+                          {business && <div className="text-gray-500 text-xs">{business.name}</div>}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          {formatDateTime(slot.start_time)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-block px-2 py-1 text-xs rounded ${getStatusColor(reservation.status)}`}>
+                            {reservation.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                          {reservation.status === 'pending' && (
+                            <>
+                              <button
+                                onClick={() => handleConfirmReservation(reservation.id)}
+                                className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                              >
+                                Confirm
+                              </button>
+                              <button
+                                onClick={() => handleCancelReservation(reservation.id)}
+                                className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          )}
+                          {reservation.status === 'confirmed' && (
+                            <button
+                              onClick={() => handleCancelReservation(reservation.id)}
+                              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <ConfirmModal
+            isOpen={showConfirmModal}
+            title="Confirm Reservation"
+            message="Are you sure you want to confirm this reservation?"
+            confirmText="Yes, Confirm"
+            cancelText="No"
+            onConfirm={confirmReservation}
+            onCancel={() => {
+              setShowConfirmModal(false);
+              setConfirmReservationId(null);
+            }}
+          />
+
+          <ConfirmModal
+            isOpen={showCancelModal}
+            title="Cancel Reservation"
+            message="Are you sure you want to cancel this reservation?"
+            confirmText="Yes, Cancel"
+            cancelText="No"
+            onConfirm={confirmCancel}
+            onCancel={() => {
+              setShowCancelModal(false);
+              setCancelId(null);
+            }}
+            danger
+          />
+        </div>
+      </Layout>
+    );
+  }
+
+  // Customer view - Available slots and my bookings
   return (
     <Layout>
       <div className="max-w-7xl mx-auto">
@@ -202,7 +344,7 @@ export default function Reservations() {
                       </span>
                     </div>
 
-                    {reservation.status === 'PENDING' && (
+                    {reservation.status === 'pending' && (
                       <button
                         onClick={() => handleCancelReservation(reservation.id)}
                         className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"

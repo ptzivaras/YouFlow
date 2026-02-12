@@ -108,12 +108,14 @@ const Businesses = () => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Businesses</h1>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            {showForm ? 'Cancel' : 'Add Business'}
-          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              {showForm ? 'Cancel' : 'Add Business'}
+            </button>
+          )}
         </div>
 
       {error && (

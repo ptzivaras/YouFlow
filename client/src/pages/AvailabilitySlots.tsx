@@ -55,16 +55,32 @@ export default function AvailabilitySlots() {
     setEndTime('');
   };
 
+  const formatForInput = (isoString: string): string => {
+    // Convert ISO string to datetime-local format (YYYY-MM-DDTHH:MM)
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!serviceId || !startTime || !endTime) return;
 
     try {
       setSubmitting(true);
+      
+      // Convert datetime-local format to ISO format for backend
+      const startISO = new Date(startTime).toISOString();
+      const endISO = new Date(endTime).toISOString();
+      
       const data: CreateSlotDto = {
         service_id: serviceId,
-        start_time: startTime,
-        end_time: endTime,
+        start_time: startISO,
+        end_time: endISO,
       };
 
       if (editingId) {
@@ -85,8 +101,8 @@ export default function AvailabilitySlots() {
   const handleEdit = (slot: AvailabilitySlot) => {
     setEditingId(slot.id);
     setServiceId(slot.service_id);
-    setStartTime(slot.start_time.slice(0, 16)); // Format for datetime-local
-    setEndTime(slot.end_time.slice(0, 16));
+    setStartTime(formatForInput(slot.start_time));
+    setEndTime(formatForInput(slot.end_time));
     setShowForm(true);
   };
 
@@ -161,7 +177,7 @@ export default function AvailabilitySlots() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Availability Slots</h1>
-          {!showForm && (
+          {!showForm && user?.role === 'admin' && (
             <button
               onClick={() => setShowForm(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -269,7 +285,7 @@ export default function AvailabilitySlots() {
               <div className="mb-3">
                 <span
                   className={`inline-block px-3 py-1 text-sm rounded ${
-                    slot.status === 'AVAILABLE'
+                    slot.status === 'available'
                       ? 'bg-green-100 text-green-700'
                       : 'bg-gray-100 text-gray-700'
                   }`}
@@ -278,7 +294,7 @@ export default function AvailabilitySlots() {
                 </span>
               </div>
 
-              {canModifySlot(slot) && slot.status === 'AVAILABLE' && (
+              {canModifySlot(slot) && slot.status === 'available' && (
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(slot)}
