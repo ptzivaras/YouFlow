@@ -118,10 +118,30 @@ Business (YouFlow Spa)
 
 
 ## Commands
-URL: http://localhost:3000
-http://localhost:5173/
-How to Run?
-1. cd client
-2. npm run dev
+
+### URLs
+- Backend API: http://localhost:3000
+- Frontend: http://localhost:5173
+
+### How to Run Both Servers?
+
+**Terminal 1 - Backend:**
+```bash
+cd server
+npm run dev
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd client
+npm run dev
+```
+
+### Important Notes
+- Backend endpoints are prefixed with `/auth`, `/businesses`, etc.
+  - Example: `POST http://localhost:3000/auth/register` (not `/register`)
+  - Example: `POST http://localhost:3000/auth/login`
+- Frontend automatically connects to backend via `VITE_API_URL` in `.env`
+- Make sure PostgreSQL is running (`youflow_dev` database)
 
 
